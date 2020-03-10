@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-myDio() {
+Dio myDio() {
   Dio dio = new Dio();
   return dio;
 }
