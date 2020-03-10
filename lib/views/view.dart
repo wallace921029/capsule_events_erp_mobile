@@ -1,3 +1,6 @@
+import 'package:capsule_events_erp_mobile/views/stock_in.dart';
+import 'package:capsule_events_erp_mobile/views/stock_out.dart';
+import 'package:capsule_events_erp_mobile/views/stock_query.dart';
 import 'package:flutter/material.dart';
 
 import 'person.dart';
@@ -16,7 +19,7 @@ class _ViewState extends State<View> {
   @override
   void initState() { 
     super.initState();
-    viewList.addAll([new Person(), new Person(), new Person(), new Person()]);
+    viewList.addAll([new StockIn(), new StockOut(), new StockQuery(), new Person()]);
   }
 
   @override

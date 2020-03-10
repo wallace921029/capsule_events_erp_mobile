@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
           )
         );
 
-        Navigator.of(context).pushNamed('view');
+        Navigator.of(context).pushReplacementNamed('view');
       } else {
         Scaffold.of(context).showSnackBar(
           new SnackBar(
@@ -45,7 +45,6 @@ class _LoginState extends State<Login> {
           )
         );
       }
-  
     }
 
   @override
