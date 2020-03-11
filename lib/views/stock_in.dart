@@ -1,4 +1,6 @@
 import 'package:capsule_events_erp_mobile/common_style/common_form_style.dart';
+import 'package:capsule_events_erp_mobile/utils/my_dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,11 +15,80 @@ class _StockInState extends State<StockIn> {
 
   GlobalKey<FormState> formState = new GlobalKey<FormState>();
 
-  String brand;
-  String subclass;
-  String commodity;
+  int brandId;
+  int subclassId;
+  int commodityId;
   TextEditingController numberController = new TextEditingController();
   TextEditingController remarkController = new TextEditingController();
+
+  List<DropdownMenuItem> brandList = new List<DropdownMenuItem>();
+  List<DropdownMenuItem> subclassList = new List<DropdownMenuItem>();
+  List<DropdownMenuItem> commodityList = new List<DropdownMenuItem>();
+
+  getBrand() async {
+    Response response = await myDio().get('/brand-dic');
+    Map<String, dynamic> result = response.data;  
+    List<DropdownMenuItem> tempList = new List<DropdownMenuItem>();
+
+    if (result["code"] == "success") {
+      for(var i = 0; i < result["data"].length; i++) {
+          tempList.add(new DropdownMenuItem(
+            value: int.parse(result["data"][i]["id"].toString()),
+            child: new Text("${result['data'][i]['brand_name']}"),
+          ));
+      }
+      setState(() {
+        brandList = tempList;
+      });
+    }
+  }
+
+  getSubclass(int brandId) async {
+    Response response = await myDio().get('/subclass-dic', queryParameters: {
+      "brandId": brandId
+    });
+    Map<String, dynamic> result = response.data;  
+    List<DropdownMenuItem> tempList = new List<DropdownMenuItem>();
+
+    if (result["code"] == "success") {
+      for(var i = 0; i < result["data"].length; i++) {
+          tempList.add(new DropdownMenuItem(
+            value: int.parse(result["data"][i]["id"].toString()),
+            child: new Text("${result['data'][i]['subclass_name']}"),
+          ));
+      }
+      setState(() {
+        subclassList = tempList;
+      });
+    }
+  }
+
+  getCommodity(int brandId, int subclassId) async {
+    Response response = await myDio().get('/commodity-dic', queryParameters: {
+      "brandId": brandId,
+      "subclassId": subclassId
+    });
+    Map<String, dynamic> result = response.data;  
+    List<DropdownMenuItem> tempList = new List<DropdownMenuItem>();
+
+    if (result["code"] == "success") {
+      for(var i = 0; i < result["data"].length; i++) {
+          tempList.add(new DropdownMenuItem(
+            value: int.parse(result["data"][i]["id"].toString()),
+            child: new Text("${result['data'][i]['commodity_name']}"),
+          ));
+      }
+      setState(() {
+        commodityList = tempList;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getBrand();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +104,15 @@ class _StockInState extends State<StockIn> {
               new Padding(
                 padding: new EdgeInsets.all(8.0),
                 child: new DropdownButtonFormField(
-                  value: brand,
-                  items: [
-                    new DropdownMenuItem(value: "123", child: new Text("Capsule Events")),
-                    new DropdownMenuItem(value: "3dr", child: new Text("3DR")),
-                    new DropdownMenuItem(value: "ddd", child: new Text("Nic")),
-                  ], 
+                  value: brandId,
+                  items: brandList, 
                   onChanged: (value) {
                     setState(() {
-                      brand = value;
+                      brandId = value;
+                      subclassId = null;
+                      commodityId = null;
                     });
+                    getSubclass(brandId);
                   },
                   isDense: true,
                   decoration: formInputDecoration("品牌", "请选择品牌")
@@ -51,16 +121,14 @@ class _StockInState extends State<StockIn> {
               new Padding(
                 padding: new EdgeInsets.all(8.0),
                 child: new DropdownButtonFormField(
-                  value: subclass,
-                  items: [
-                    new DropdownMenuItem(value: "123", child: new Text("Capsule Events")),
-                    new DropdownMenuItem(value: "3dr", child: new Text("3DR")),
-                    new DropdownMenuItem(value: "ddd", child: new Text("Nic")),
-                  ], 
+                  value: subclassId,
+                  items: subclassList, 
                   onChanged: (value) {
                     setState(() {
-                      subclass = value;
+                      subclassId = value;
+                      commodityId = null;
                     });
+                    getCommodity(brandId, subclassId);
                   },
                   isDense: true,
                   decoration: formInputDecoration("子类", "请选择子类")
@@ -69,15 +137,11 @@ class _StockInState extends State<StockIn> {
               new Padding(
                 padding: new EdgeInsets.all(8.0),
                 child: new DropdownButtonFormField(
-                  value: commodity,
-                  items: [
-                    new DropdownMenuItem(value: "123", child: new Text("Capsule Events")),
-                    new DropdownMenuItem(value: "3dr", child: new Text("3DR")),
-                    new DropdownMenuItem(value: "ddd", child: new Text("Nic")),
-                  ], 
+                  value: commodityId,
+                  items: commodityList, 
                   onChanged: (value) {
                     setState(() {
-                      commodity = value;
+                      commodityId = value;
                     });
                   },
                   isDense: true,

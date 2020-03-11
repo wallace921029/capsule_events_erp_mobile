@@ -1,4 +1,3 @@
-import 'package:capsule_events_erp_mobile/config/url_prefix.dart';
 import 'package:capsule_events_erp_mobile/utils/my_dio.dart';
 import 'package:capsule_events_erp_mobile/utils/my_shared.dart';
 import 'package:dio/dio.dart';
@@ -21,7 +20,7 @@ class _LoginState extends State<Login> {
   TextEditingController password = new TextEditingController();
 
   login(username, password, context) async {
-      Response reponse = await myDio().post("${UrlPrefix.host}/login", data: {
+      Response reponse = await myDio().post("/login", data: {
         "username": username,
         "password": password
       });
@@ -31,6 +30,7 @@ class _LoginState extends State<Login> {
         instance.setBool('isLogin', true);
         instance.setString('nickname', result["data"]["nickname"]);
         instance.setInt('userId', result["data"]["id"]);
+        instance.setString('token', result["data"]["token"]);
 
         Scaffold.of(context).showSnackBar(
           new SnackBar(

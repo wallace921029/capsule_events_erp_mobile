@@ -16,6 +16,7 @@ class _PersonState extends State<Person> {
     await instance.remove("isLogin");
     await instance.remove("nickname");
     await instance.remove("userId");
+    await instance.remove("token");
     return new Future(() => true);
   }
   

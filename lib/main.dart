@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         future: getMyShared(),
         builder: (BuildContext context, AsyncSnapshot<SharedPreferences> asyncSnapshot) {
           if (asyncSnapshot.connectionState == ConnectionState.done) {
-            var isLogin = asyncSnapshot.data.getBool("isLogin");
+            var isLogin = asyncSnapshot.data.containsKey("isLogin");
             if (isLogin) {
               return new View();
             }
